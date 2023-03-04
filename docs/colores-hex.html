@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Selector de colores</title>
+</head>
+<body>
+	<h1>Selector de colores</h1>
+	<p>Selecciona un color:</p>
+	<input type="color" id="colorPicker" onchange="mostrarColor()">
+	<br><br>
+	<div id="colorSeleccionado" style="width: 200px; height: 200px;"></div>
+	<br>
+	<div id="colorOpuesto" style="width: 200px; height: 200px;"></div>
+	<br>
+	<div id="colorHex"></div>
+
+	<script>
+		function mostrarColor() {
+			var color = document.getElementById("colorPicker").value;
+			var colorSeleccionado = document.getElementById("colorSeleccionado");
+			var colorOpuesto = document.getElementById("colorOpuesto");
+			var colorHex = document.getElementById("colorHex");
+
+			// Mostrar el color seleccionado
+			colorSeleccionado.style.backgroundColor = color;
+
+			// Calcular el color opuesto
+			var r = parseInt(color.substr(1, 2), 16);
+			var g = parseInt(color.substr(3, 2), 16);
+			var b = parseInt(color.substr(5, 2), 16);
+			var rOpuesto = 255 - r;
+			var gOpuesto = 255 - g;
+			var bOpuesto = 255 - b;
+			var colorOpuestoHex = "#" + componentToHex(rOpuesto) + componentToHex(gOpuesto) + componentToHex(bOpuesto);
+			colorOpuesto.style.backgroundColor = colorOpuestoHex;
+
+			// Mostrar el color seleccionado en formato HEX
+			colorHex.innerHTML = "Color seleccionado: " + color;
+		}
+
+		function componentToHex(c) {
+			var hex = c.toString(16);
+			return hex.length == 1 ? "0" + hex : hex;
+		}
+	</script>
+</body>
+</html>
+

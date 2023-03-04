@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Selector de colores</title>
+	<meta charset="UTF-8">
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+		}
+
+		h1 {
+			margin-top: 30px;
+			text-align: center;
+		}
+
+		.color-box {
+			width: 100px;
+			height: 100px;
+			margin: 0 auto;
+			margin-top: 30px;
+			border: 1px solid #ccc;
+		}
+
+		.color-label {
+			display: block;
+			margin-top: 10px;
+			text-align: center;
+		}
+
+		.color-input {
+			width: 100%;
+			margin-top: 10px;
+			padding: 5px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+		}
+
+		.color-info {
+			margin-top: 30px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>Selector de colores</h1>
+	<div class="color-box" id="color-box"></div>
+	<label class="color-label" for="color-input">Color seleccionado:</label>
+	<input class="color-input" type="color" id="color-input" onchange="updateColor()">
+	<div class="color-info">
+		<p><strong>Color seleccionado (RGB):</strong> <span id="color-rgb"></span></p>
+		<p><strong>Color opuesto (RGB):</strong> <span id="opposite-color-rgb"></span></p>
+		<p><strong>Color similar (RGB):</strong> <span id="similar-color-rgb"></span></p>
+		<p><strong>Color seleccionado (HSL):</strong> <span id="color-hsl"></span></p>
+	</div>
+
+	<script>
+		function updateColor() {
+			// Obtener el valor del selector de colores
+			var selectedColor = document.getElementById("color-input").value;
+
+			// Actualizar el color de la caja de muestra
+			document.getElementById("color-box").style.backgroundColor = selectedColor;
+
+			// Obtener los valores RGB del color seleccionado
+			var rgbValues = selectedColor.match(/\d+/g);
+			var r = parseInt(rgbValues[0]);
+			var g = parseInt(rgbValues[1]);
+			var b = parseInt(rgbValues[2]);
+
+			// Calcular el color opuesto en RGB
+			var oppositeColor = "rgb(" + (255 - r) + ", " + (255 - g) + ", " + (255 - b) + ")";
+			document.getElementById("opposite-color-rgb").textContent = oppositeColor;
+
+			// Calcular el color similar en RGB
+			var similarColor = "rgb(" + (r + 20) + ", " + (g + 20) + ", " + (b + 20) + ")";
+			document.getElementById("similar-color-rgb").textContent = similarColor;
+
+			// Obtener los valores HSL del color seleccionado
+			var hslValues = rgbToHsl(r, g, b);
+			var h = Math.round(hslValues[0]);
+					var s = Math.round(hslValues[1] * 100);
+		var l = Math.round(hslValues[2] * 100);
+
+		// Actualizar el valor de HSL en la página
+		document.getElementById("color-hsl").textContent = "hsl(" + h + ", " + s + "%, " + l + "%)";
+
+		// Actualizar el valor RGB en la página
+		document.getElementById("color-rgb").textContent = selectedColor;
+	}
+
+	// Función para convertir valores RGB a valores HSL
+	function rgbToHsl(r, g, b) {
+		r /= 255, g /= 255, b /= 255;
+		var max = Math.max(r, g, b), min = Math.min(r, g, b);
+		var h, s, l = (max + min) / 2;
+
+		if (max == min){
+			h = s = 0; // achromatic
+		} else {
+			var d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+			switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+			h /= 6;
+		}
+
+		return [h * 360, s, l];
+	}
+
+	// Actualizar el color al cargar la página
+	updateColor();
+</script>
+</body>
+</html>
+

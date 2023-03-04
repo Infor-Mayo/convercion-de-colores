@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Selector de Colores</title>
+	<style>
+		.color-preview {
+			width: 100px;
+			height: 100px;
+			border: 1px solid black;
+			margin-top: 10px;
+		}
+
+		.color-details {
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<label for="color-picker">Seleccione un color:</label>
+	<input type="color" id="color-picker">
+
+	<div class="color-preview"></div>
+
+	<div class="color-details">
+		<p>Color seleccionado: <span id="selected-color"></span></p>
+		<p>Color similar: <span id="similar-color"></span></p>
+		<p>Color CMYK: <span id="cmyk-color"></span></p>
+	</div>
+
+	<script>
+		const colorPicker = document.getElementById('color-picker');
+		const selectedColor = document.getElementById('selected-color');
+		const similarColor = document.getElementById('similar-color');
+		const cmykColor = document.getElementById('cmyk-color');
+		const colorPreview = document.querySelector('.color-preview');
+
+		colorPicker.addEventListener('input', function() {
+			const colorValue = colorPicker.value;
+			selectedColor.textContent = colorValue;
+
+			colorPreview.style.backgroundColor = colorValue;
+
+			// Obtenemos el valor RGB del color seleccionado
+			const rgbValues = colorValue.substring(1).match(/.{1,2}/g).map(val => parseInt(val, 16));
+			const red = rgbValues[0];
+			const green = rgbValues[1];
+			const blue = rgbValues[2];
+
+			// Obtenemos el valor opuesto RGB
+			const oppositeRed = 255 - red;
+			const oppositeGreen = 255 - green;
+			const oppositeBlue = 255 - blue;
+			const oppositeColor = `rgb(${oppositeRed}, ${oppositeGreen}, ${oppositeBlue})`;
+			similarColor.textContent = oppositeColor;
+
+			// Convertimos el valor RGB a CMYK
+			const cmyk = rgbToCmyk(red, green, blue);
+			cmykColor.textContent = `C: ${cmyk.c}, M: ${cmyk.m}, Y: ${cmyk.y}, K: ${cmyk.k}`;
+		});
+
+		function rgbToCmyk(r, g, b) {
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+
+			let k = 1 - Math.max(r, g, b);
+			let c = (1 - r - k) / (1 - k);
+			let m = (1 - g - k) / (1 - k);
+			let y = (1 - b - k) / (1 - k);
+
+			return { c: Math.round(c*100), m: Math.round(m*100), y: Math.round(y*100), k: Math.round(k*100) };
+		}
+	</script>
+</body>
+</html>
+
